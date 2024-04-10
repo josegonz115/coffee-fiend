@@ -8,16 +8,6 @@
  * 
  */
 
-// function quoteAlert() {
-//     console.log("Button Clicked!")
-//     alert("I guess I can kiss heaven goodbye, because it got to be a sin to look this good!");
-// }
-
-// function removeLastCard() {
-//     titles.pop(); // Remove last item in titles array
-//     showCards(); // Call showCards again to refresh
-// }
-
 /**
  * edits the html content of a card with given coffee data
  * @param {HTMLElement} card - card element
