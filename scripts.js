@@ -6,89 +6,238 @@
  * demonstrating your understanding of data structures, and you'll do that
  * with the JavaScript code you write in this file.
  * 
- * The comments in this file are only to help you learn how the starter code
- * works. The instructions for the project are in the README. That said, here
- * are the three things you should do first to learn about the starter code:
- * - 1 - Change something small in index.html or style.css, then reload your 
- *    browser and make sure you can see that change. 
- * - 2 - On your browser, right click anywhere on the page and select
- *    "Inspect" to open the browser developer tools. Then, go to the "console"
- *    tab in the new window that opened up. This console is where you will see
- *    JavaScript errors and logs, which is extremely helpful for debugging.
- *    (These instructions assume you're using Chrome, opening developer tools
- *    may be different on other browsers. We suggest using Chrome.)
- * - 3 - Add another string to the titles array a few lines down. Reload your
- *    browser and observe what happens. You should see a fourth "card" appear
- *    with the string you added to the array, but a broken image.
- * 
  */
 
+// function quoteAlert() {
+//     console.log("Button Clicked!")
+//     alert("I guess I can kiss heaven goodbye, because it got to be a sin to look this good!");
+// }
 
-const FRESH_PRINCE_URL = "https://upload.wikimedia.org/wikipedia/en/3/33/Fresh_Prince_S1_DVD.jpg";
-const CURB_POSTER_URL = "https://m.media-amazon.com/images/M/MV5BZDY1ZGM4OGItMWMyNS00MDAyLWE2Y2MtZTFhMTU0MGI5ZDFlXkEyXkFqcGdeQXVyMDc5ODIzMw@@._V1_FMjpg_UX1000_.jpg";
-const EAST_LOS_HIGH_POSTER_URL = "https://static.wikia.nocookie.net/hulu/images/6/64/East_Los_High.jpg";
+// function removeLastCard() {
+//     titles.pop(); // Remove last item in titles array
+//     showCards(); // Call showCards again to refresh
+// }
 
-// This is an array of strings (TV show titles)
-let titles = [
-    "Fresh Prince of Bel Air",
-    "Curb Your Enthusiasm",
-    "East Los High"
-];
-// Your final submission should have much more data than this, and 
-// you should use more than just an array of strings to store it all.
+/**
+ * edits the html content of a card with given coffee data
+ * @param {HTMLElement} card - card element
+ * @param {Coffee} coffee - coffee data
+ */
+function editCardContent(card, coffee) {
+    // card.style.width = "15rem";
+    // card.firstElementChild.classList.add("card-flex");
+    card.querySelector('h2').textContent = coffee.name;
+    card.querySelector('.card-content-roast p:nth-child(1)').textContent = coffee.roaster;
+    card.querySelector('.card-content-roast p:nth-child(2)').textContent = coffee.roast;
+    card.querySelector('.card-content-location p:nth-child(1)').textContent = "Loc: " + coffee.countryLocation;
+    card.querySelector('.card-content-location p:nth-child(2)').textContent = "Org: " + coffee.origin;
+    const price = card.querySelector('.card-content-price');
+    price.textContent = coffee.getUsdPrice();
+    price.style.margin = "0.25rem";
+    const rating = card.querySelector('.card-content-rating');
+    rating.textContent = coffee.getRating();
+    rating.style.margin = "0.25rem";
+    const review = card.querySelector('.card-content-review')
+    review.textContent = coffee.review;
+    // console.log("new card:", coffee.name, "- html: ", card);
+    const countryImage = card.querySelector("#card-country-image");
+    countryImage.src = coffee.imageUrl;
+    countryImage.alt = coffee.loc_country;
+    countryImage.style.width = "40%";    
+    countryImage.style.objectFit = "contain";
+    const roastImage = card.querySelector("#card-roast-image");
+    roastImage.src = coffee.roastImageUrl;
+    roastImage.alt = coffee.roast;
+    roastImage.style.width = "40%";    
+    roastImage.style.objectFit = "scale-down";
+}
 
+/**
+ * @type {Array.<Coffee>}
+ */
+const coffees = [];
+/**
+ * @type {Array.<Coffee>}
+ */
+let filteredCoffees = []
 
-// This function adds cards the page to display the data in the array
-function showCards() {
+const fetchCoffeeData = async() => {
+    // dataset source: https://www.kaggle.com/datasets/schmoyote/coffee-reviews-dataset?select=simplified_coffee.csv
+    try {
+        const coffeesPayback = await fetch("./simplified_coffee.csv")
+        const coffeesText = await coffeesPayback.text();
+        const coffessParsedText = Papa.parse(coffeesText, { header: true});
+        Coffee.metadata = coffessParsedText.meta;
+
+        const roastSet = new Set();
+        const locationSet = new Set();
+
+        for(let coffee of coffessParsedText.data){
+            const coffeeObject = new Coffee(coffee);
+            coffees.push(coffeeObject); 
+            filteredCoffees.push(coffeeObject);
+
+            roastSet.add(coffeeObject.roast);
+            locationSet.add(coffeeObject.countryLocation);
+        }
+        console.log(roastSet);// TESTING
+        console.log(locationSet);// TESTING
+    } catch (error) {
+        console.error('Error:', error);
+    }
+};
+
+const injectCoffeeCardsIntoDom = () => {
+    // console.log("injectCoffee called"); // TESTING
     const cardContainer = document.getElementById("card-container");
     cardContainer.innerHTML = "";
     const templateCard = document.querySelector(".card");
-    
-    for (let i = 0; i < titles.length; i++) {
-        let title = titles[i];
-
-        // This part of the code doesn't scale very well! After you add your
-        // own data, you'll need to do something totally different here.
-        let imageURL = "";
-        if (i == 0) {
-            imageURL = FRESH_PRINCE_URL;
-        } else if (i == 1) {
-            imageURL = CURB_POSTER_URL;
-        } else if (i == 2) {
-            imageURL = EAST_LOS_HIGH_POSTER_URL;
-        }
-
+    for (let i = 0; i < filteredCoffees.length; i++) {
+        const coffee = filteredCoffees[i];
         const nextCard = templateCard.cloneNode(true); // Copy the template card
-        editCardContent(nextCard, title, imageURL); // Edit title and image
+        editCardContent(nextCard, coffee); // Edit title and image
         cardContainer.appendChild(nextCard); // Add new card to the container
     }
-}
+    console.log("cardcontaainer children:", cardContainer.children.length); // testing
+};
 
-function editCardContent(card, newTitle, newImageURL) {
-    card.style.display = "block";
+// pagination feature
+let cardContainer;
+let pageIndex = 1; 
+const cardsPerPage = 8;
+let cards;
+let pageNumbers;
+let totalPages;
+let prevButton;
+let nextButton;
+let pageLinks;
+const setCardsInPagination = () => {
+    cards = Array.from(cardContainer.getElementsByClassName('card'));
+    totalPages = Math.ceil(cards.length / cardsPerPage);
+    console.log("totalPages:", totalPages); // TESTING
+};
+/**
+ * displays a certain page by partitioning a section of the Coffee array
+ * @param {number} page - the pagination page index
+ */
+const displayPage = (page) => {
+    const startIndex = (page - 1) * cardsPerPage; 
+    const endIndex = startIndex + cardsPerPage; 
+    console.log("displayPage(startIndex, endIndex, page):", startIndex, endIndex, page); // TESTING
+    cards.forEach((card, i) => { 
+        if (i >= startIndex && i < endIndex) { 
+            card.style.display = 'block'; 
+        } else { 
+            card.style.display = 'none'; 
+        } 
+    }); 
+};
+/**
+ * updates pagination buttons and page numbers
+ */
+const updatePagination = () => { 
+    pageNumbers.textContent = `Page ${pageIndex} of ${totalPages}`; 
+    prevButton.disabled = pageIndex === 1; 
+    nextButton.disabled = pageIndex === totalPages; 
+    pageLinks.forEach((link) => { 
+        const page = parseInt(link.getAttribute('data-page')); 
+        link.classList.toggle('active', page === pageIndex); 
+    }); 
+} 
+const initPagination = () => {
+    cardContainer = document.getElementById("card-container");
+    prevButton = document.getElementById('prev'); 
+    nextButton = document.getElementById('next'); 
+    pageNumbers = document.getElementById('page-numbers'); 
+    pageLinks = document.querySelectorAll('.page-link');
+    // const pagination = document.getElementById('pagination'); 
+    setCardsInPagination();
 
-    const cardHeader = card.querySelector("h2");
-    cardHeader.textContent = newTitle;
+    // adds event listener for previous button
+    prevButton.addEventListener('click', () => { 
+        if (pageIndex > 1) { 
+            pageIndex--; 
+            displayPage(pageIndex); 
+            updatePagination(); 
+        } 
+    }); 
+    // adds event listener for Next button
+    nextButton.addEventListener('click', () => { 
+        if (pageIndex < totalPages) { 
+            pageIndex++; 
+            displayPage(pageIndex); 
+            updatePagination(); 
+        } 
+    }); 
+    // adds event listener for page number buttons
+    pageLinks.forEach((link) => { 
+        link.addEventListener('click', (e) => { 
+            e.preventDefault(); 
+            const page = parseInt(link.getAttribute('data-page')); 
+            if (page !== pageIndex) { 
+                pageIndex = page; 
+                displayPage(pageIndex); 
+                updatePagination(); 
+            } 
+        }); 
+    }); 
+    displayPage(pageIndex);
+    updatePagination();
+};
+//  pagination feature ends
 
-    const cardImage = card.querySelector("img");
-    cardImage.src = newImageURL;
-    cardImage.alt = newTitle + " Poster";
+// searching feature
+const searchInputSubmit = (event) => {
+    event.preventDefault();
+    const searchTerm = document.getElementById('search-bar').value.toLowerCase();
+    const roastSelect = document.getElementById('roast').value.toLowerCase();
+    const locationSelect = document.getElementById('location').value.toLowerCase();
+    if(searchTerm === undefined){
+        filteredCoffees = coffees.split();
+    }else{
+        filteredCoffees = coffees.filter(coffee => coffee.name.toLowerCase().includes(searchTerm));
+    }
+    if (roastSelect !== "none") {
+        filteredCoffees = filteredCoffees.filter(coffee => coffee.roast && coffee.roast.toLowerCase().includes(roastSelect));
+    }
+    if (locationSelect !== "none") {
+        filteredCoffees = filteredCoffees.filter(coffee => coffee.countryLocation && coffee.countryLocation.toLowerCase().includes(locationSelect));
+    }
+    console.log(filteredCoffees.length); // Outputs the filtered coffees
+    injectCoffeeCardsIntoDom();
+    setCardsInPagination();
+    displayPage(1);
+    updatePagination();
+};
 
-    // You can use console.log to help you debug!
-    // View the output by right clicking on your website,
-    // select "Inspect", then click on the "Console" tab
-    console.log("new card:", newTitle, "- html: ", card);
-}
+// const initSearchBar = () => {
+//     const searchBar = document.getElementById("search-bar");
+//     searchBar.addEventListener("input",searchInputSubmit);
+// };
 
-// This calls the addCards() function when the page is first loaded
-document.addEventListener("DOMContentLoaded", showCards);
+const initFormSubmit = () => {
+    const form = document.querySelector('.filter-bar form');
+    form.addEventListener('submit', searchInputSubmit);
+};
+// searching feature ends
 
-function quoteAlert() {
-    console.log("Button Clicked!")
-    alert("I guess I can kiss heaven goodbye, because it got to be a sin to look this good!");
-}
 
-function removeLastCard() {
-    titles.pop(); // Remove last item in titles array
-    showCards(); // Call showCards again to refresh
-}
+document.addEventListener("DOMContentLoaded", async()=>{
+    await fetchCoffeeData();
+    injectCoffeeCardsIntoDom();
+    initPagination();
+    // initSearchBar();
+    initFormSubmit();
+});
+
+// <li>
+// <figure>
+//   <!-- Photo by Quentin Dr on Unsplash -->
+//   <img src="https://images.unsplash.com/photo-1471421298428-1513ab720a8e" alt="Several hands holding beer glasses">
+//   <figcaption><h3>Billions upon billions</h3></figcaption>
+// </figure>
+// <p>
+//   Made in the interiors of collapsing stars star stuff harvesting star light venture billions upon billions Drake Equation brain is the seed of intelligence?
+// </p>
+// <a href="#">Visit Website</a>
+// </li> 

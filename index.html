@@ -1,31 +1,97 @@
 <!DOCTYPE html>
-<html>
-
+<html lang='en' class='scroll-smooth'>
 <head>
     <title>LA TV Shows | Home</title>
+    <meta charset='UTF-8' />
     <meta name="description" content="A Catalog of Shows Set in Los Angeles">
+    <meta name='viewport' content='width=device-width, initial-scale=1' />
+    <!-- <link rel='icon' href='/favicon.ico' />
+    <link rel='icon' type='image/png' sizes='32x32' href='/favicon-32x32.png' />
+    <link rel='icon' type='image/png' sizes='16x16' href='/favicon-96x96.png' /> -->
+    <meta name='author' content='Jose Juan Gonzalez Jr' />
     <link rel="stylesheet" href="style.css" />
+    <script  type="text/javascript" src="Coffee.js"></script>
     <script type="text/javascript" src="scripts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
 </head>
 
 <body>
     <header class="main-header">
-        <h1 class="title">LA TV Shows</h1>
+        <h1 class="title heading-text">LA TV Shows</h1>
     </header>
-    <div id="card-container">
-        
-    </div>
-    <div class="card" style="display: none;">
-        <div class="card-content">
-            <h2>TV Show Title</h2>
-            <img src="" alt="TV Show Poster">
-            <ul>
-                <li>Bullet Point 1</li>
-                <li>Bullet Point 2</li>
-                <li>Bullet Point 3</li>
-            </ul>
+    <main>
+        <div class="filter-bar">
+            <form>
+                <input type="text" placeholder="Search Name..." id="search-bar">
+                <label for="roast">Roast:</label>
+                <select name="roast" id="roast">
+                    <option value="" selected>none</option>
+                    <option value="Medium-Light">Medium-Light</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Light">Light</option>
+                    <option value="Medium-Dark">Medium-Dark</option>
+                    <option value="Dark">Dark</option>
+                </select>
+                <!-- <br><br> -->
+                <label for="location">Location:</label>
+                <select name="location" id="location">
+                    <option value="" selected>none</option>
+                    <option value="United States">United States</option>
+                    <option value="Canada">Canada</option>
+                    <option value="Hong Kong">Hong Kong</option>
+                    <option value="Hawai'i">Hawai'i</option>
+                    <option value="Taiwan">Taiwan</option>
+                    <option value="England">England</option>
+                    <option value="Australia">Australia</option>
+                    <option value="Guatemala">Guatemala</option>
+                    <option value="Japan">Japan</option>
+                    <option value="China">China</option>
+                    <option value="Kenya">Kenya</option>
+                    <option value="New Taiwan">New Taiwan</option>
+                </select>
+                <!-- <br><br> -->
+                <input type="submit" value="Submit">
+            </form>
         </div>
-    </div>
+        <div id="card-container" class="debug">
+        </div>
+        <div class="pagination" id="pagination"> 
+            <a href="#" id="prev">Previous</a> 
+            <a href="#" class="page-link" data-page="1">1</a> 
+            <a href="#" class="page-link" data-page="2">2</a> 
+            <a href="#" class="page-link" data-page="3">3</a> 
+            <a href="#" id="next">Next</a> 
+            <p id="page-numbers"> </p> 
+        </div> 
+    
+        <div class="card debug flip-card" style="display: none;">
+            <div class="flip-card-inner">
+                <div class="flip-card-front card-flex">
+                    <h2 class="h2-heading-text">name</h2>
+                    <div class="card-content-roast">
+                        <p>roaster</p>
+                        <p>roast</p>
+                    </div>
+                    <div class="card-image-container">
+                        <img id="card-country-image">
+                        <img id="card-roast-image">
+                    </div>
+                    <div class="card-content-location">
+                        <p>loc_country</p> 
+                        <p>origin</p>
+                    </div>
+
+                    <!-- name,roaster,roast,loc_country,origin,100g_USD,rating,review_date,review -->
+                </div>
+                <div class="flip-card-back card-back-flex">
+                    <p class="card-content-review">review</p>
+                    <h3 class="card-content-price">100g_USD</h3>
+                    <h3 class="card-content-rating">rating</h3>
+                </div>
+            </div>
+        </div>
+    </main>
+
     <div class="footer">
         <button onclick="quoteAlert();">
             Get A Quote!
@@ -36,4 +102,84 @@
     </div>
 </body>
 
+    <style>
+        .flip-card {
+            background-color: transparent;
+            /* width: 300px;
+            height: 200px; */
+            /* width: 100%;
+            height: 100%; */
+            border: 1px solid #f1f1f1;
+            perspective: 1000px; /* Remove this if you don't want the 3D effect */
+        }
+        /* This container is needed to position the front and back side */
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+
+        /* Do an horizontal flip when you move the mouse over the flip box container */
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        /* Position the front and back side */
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden; /* Safari */
+            backface-visibility: hidden;
+        }
+
+        /* Style the front side (fallback if image is missing) */
+        .flip-card-front {
+            background-color: #bbb;
+            color: black;
+        }
+
+        /* Style the back side */
+        .flip-card-back {
+            background-color: var(--coffee-bean);
+            color: white;
+            transform: rotateY(180deg);
+        }
+        /* flip card ends */
+
+        /* pagination */
+        .pagination { 
+            text-align: center; 
+            margin-top: 2rem; 
+        } 
+        
+        .pagination a { 
+            color: var(--coffee-bean); 
+            background-color: #e8dad0;
+            padding: 8px 16px; 
+            text-decoration: none; 
+            border: 1px solid var(--coffee-bean); 
+            margin: 0 5px; 
+            border-radius: 4px; 
+        } 
+        
+        .pagination a:hover { 
+            background-color: var(--coffee-bean); 
+            color: white; 
+        } 
+        
+        .pagination .active { 
+            background-color: var(--coffee-bean); 
+            color: white; 
+        } 
+        #page-numbers { 
+            margin-top: 1.25rem; 
+            font-size: 1rem; 
+            color: var(--coffee-bean); 
+        }
+        /* pagination ends */
+    </style>
 </html>
