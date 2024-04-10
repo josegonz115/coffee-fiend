@@ -41,3 +41,7 @@ This is the instructions, requirements, and starter for stage two of the Snap En
 2. Update your Github repository so it has the most recent version of your website's source code.
 
 3. Submit the URL to your published website and the link to your Github repository to the google form in your email.
+
+## Sources
+- Obtained dataset from [https://www.kaggle.com/datasets/schmoyote/coffee-reviews-dataset?select=simplified_coffee.csv] (https://www.kaggle.com/datasets/schmoyote/coffee-reviews-dataset?select=simplified_coffee.csv)
+
