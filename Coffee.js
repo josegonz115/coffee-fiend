@@ -23,16 +23,16 @@ class Coffee {
         "China": "https://upload.wikimedia.org/wikipedia/commons/f/fa/Flag_of_the_People%27s_Republic_of_China.svg",
         "Kenya": "https://upload.wikimedia.org/wikipedia/commons/4/49/Flag_of_Kenya.svg",
         "New Taiwan": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Flag_of_World_Taiwanese_Congress.svg/2880px-Flag_of_World_Taiwanese_Congress.svg.png",
-        undefined: "/public/question.jpg"
+        undefined: "./public/question.jpg"
     };
 
     static roastToPic = {
-        "Medium-Light": "/public/medium-light-roast.jpg",
-        "Medium": "/public/medium-roast.jpg",
-        "Light": "/public/light-roast.jpg",
-        "Medium-Dark": "/public/dark-roast.jpeg",
-        "Dark": "/public/extra-dark-roast.jpeg",
-        undefined: "/public/question.jpg"
+        "Medium-Light": "./public/medium-light-roast.jpg",
+        "Medium": "./public/medium-roast.jpg",
+        "Light": "./public/light-roast.jpg",
+        "Medium-Dark": "./public/dark-roast.jpeg",
+        "Dark": "./public/extra-dark-roast.jpeg",
+        undefined: "./public/question.jpg"
     }
     
 
