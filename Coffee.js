@@ -23,7 +23,7 @@ class Coffee {
         "China": "https://upload.wikimedia.org/wikipedia/commons/f/fa/Flag_of_the_People%27s_Republic_of_China.svg",
         "Kenya": "https://upload.wikimedia.org/wikipedia/commons/4/49/Flag_of_Kenya.svg",
         "New Taiwan": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Flag_of_World_Taiwanese_Congress.svg/2880px-Flag_of_World_Taiwanese_Congress.svg.png",
-        undefined: "https://upload.wikimedia.org/wikipedia/commons/5/50/Flag_with_question_mark.svg"
+        undefined: "/public/question.jpg"
     };
 
     static roastToPic = {
@@ -32,7 +32,7 @@ class Coffee {
         "Light": "/public/light-roast.jpg",
         "Medium-Dark": "/public/dark-roast.jpeg",
         "Dark": "/public/extra-dark-roast.jpeg",
-        undefined: "https://upload.wikimedia.org/wikipedia/commons/5/50/Flag_with_question_mark.svg"
+        undefined: "/public/question.jpg"
     }
     
 
@@ -76,5 +76,12 @@ class Coffee {
 
     getRating(){
         return `${this.rating} / 100`;
+    }
+
+    get readableReviewDate() {
+        return this.reviewDate.toLocaleDateString('en-US', {
+            month: 'long',
+            year: 'numeric'
+        });
     }
 }

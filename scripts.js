@@ -37,8 +37,10 @@ function editCardContent(card, coffee) {
     const rating = card.querySelector('.card-content-rating');
     rating.textContent = coffee.getRating();
     rating.style.margin = "0.25rem";
-    const review = card.querySelector('.card-content-review')
+    const review = card.querySelector('.card-content-review');
     review.textContent = coffee.review;
+    const reviewDate = card.querySelector('.card-content-date');
+    reviewDate.textContent = coffee.readableReviewDate;
     // console.log("new card:", coffee.name, "- html: ", card);
     const countryImage = card.querySelector("#card-country-image");
     countryImage.src = coffee.imageUrl;
@@ -102,59 +104,52 @@ const injectCoffeeCardsIntoDom = () => {
 };
 
 // pagination feature
-let cardContainer;
-let pageIndex = 1; 
-const cardsPerPage = 8;
-let cards;
-let pageNumbers;
-let totalPages;
-let prevButton;
-let nextButton;
-let pageLinks;
-const setCardsInPagination = () => {
-    cards = Array.from(cardContainer.getElementsByClassName('card'));
-    totalPages = Math.ceil(cards.length / cardsPerPage);
-    console.log("totalPages:", totalPages); // TESTING
-};
-/**
- * displays a certain page by partitioning a section of the Coffee array
- * @param {number} page - the pagination page index
- */
-const displayPage = (page) => {
-    const startIndex = (page - 1) * cardsPerPage; 
-    const endIndex = startIndex + cardsPerPage; 
-    console.log("displayPage(startIndex, endIndex, page):", startIndex, endIndex, page); // TESTING
-    cards.forEach((card, i) => { 
-        if (i >= startIndex && i < endIndex) { 
-            card.style.display = 'block'; 
-        } else { 
-            card.style.display = 'none'; 
-        } 
-    }); 
-};
-/**
- * updates pagination buttons and page numbers
- */
-const updatePagination = () => { 
-    pageNumbers.textContent = `Page ${pageIndex} of ${totalPages}`; 
-    prevButton.disabled = pageIndex === 1; 
-    nextButton.disabled = pageIndex === totalPages; 
-    pageLinks.forEach((link) => { 
-        const page = parseInt(link.getAttribute('data-page')); 
-        link.classList.toggle('active', page === pageIndex); 
-    }); 
-} 
+
 const initPagination = () => {
-    cardContainer = document.getElementById("card-container");
-    prevButton = document.getElementById('prev'); 
-    nextButton = document.getElementById('next'); 
-    pageNumbers = document.getElementById('page-numbers'); 
-    pageLinks = document.querySelectorAll('.page-link');
+    const cardsPerPage = 8;
+    const cardContainer = document.getElementById("card-container");
+    const prevButton = document.getElementById('prev'); 
+    const nextButton = document.getElementById('next'); 
+    const pageNumbers = document.getElementById('page-numbers'); 
+    const pageLinks = document.querySelectorAll('.page-link');
+    const cards = Array.from(cardContainer.getElementsByClassName('card'));
+    const totalPages = Math.ceil(cards.length / cardsPerPage);
+    let pageIndex = 1;
     // const pagination = document.getElementById('pagination'); 
-    setCardsInPagination();
+    // setCardsInPagination();
+    /**
+     * displays a certain page by partitioning a section of the Coffee array
+     * @param {number} page - the pagination page index
+     */
+    const displayPage = (page) => {
+        const startIndex = (page - 1) * cardsPerPage; 
+        const endIndex = startIndex + cardsPerPage; 
+        console.log("displayPage(startIndex, endIndex, page):", startIndex, endIndex, page); // TESTING
+        cards.forEach((card, i) => { 
+            if (i >= startIndex && i < endIndex) { 
+                card.style.display = 'block'; 
+            } else { 
+                card.style.display = 'none'; 
+            } 
+        }); 
+    };
+    /**
+     * updates pagination buttons and page numbers
+     */
+    const updatePagination = () => { 
+        pageNumbers.textContent = `Page ${pageIndex} of ${totalPages}`; 
+        prevButton.disabled = pageIndex === 1; 
+        nextButton.disabled = pageIndex === totalPages; 
+        pageLinks.forEach((link, index) => { 
+            const page = parseInt(link.getAttribute('data-page')); 
+            console.log("updatePag:", page)//TESTING    
+            link.classList.toggle('active', page === pageIndex); 
+        }); 
+    };
 
     // adds event listener for previous button
-    prevButton.addEventListener('click', () => { 
+    prevButton.addEventListener('click', (event) => { 
+        event.preventDefault();
         if (pageIndex > 1) { 
             pageIndex--; 
             displayPage(pageIndex); 
@@ -162,7 +157,8 @@ const initPagination = () => {
         } 
     }); 
     // adds event listener for Next button
-    nextButton.addEventListener('click', () => { 
+    nextButton.addEventListener('click', (event) => { 
+        event.preventDefault();
         if (pageIndex < totalPages) { 
             pageIndex++; 
             displayPage(pageIndex); 
@@ -171,8 +167,8 @@ const initPagination = () => {
     }); 
     // adds event listener for page number buttons
     pageLinks.forEach((link) => { 
-        link.addEventListener('click', (e) => { 
-            e.preventDefault(); 
+        link.addEventListener('click', (event) => { 
+            event.preventDefault(); 
             const page = parseInt(link.getAttribute('data-page')); 
             if (page !== pageIndex) { 
                 pageIndex = page; 
@@ -205,9 +201,10 @@ const searchInputSubmit = (event) => {
     }
     console.log(filteredCoffees.length); // Outputs the filtered coffees
     injectCoffeeCardsIntoDom();
-    setCardsInPagination();
-    displayPage(1);
-    updatePagination();
+    // setCardsInPagination();
+    // displayPage(1);
+    // updatePagination();
+    initPagination(); 
 };
 
 // const initSearchBar = () => {
@@ -221,6 +218,37 @@ const initFormSubmit = () => {
 };
 // searching feature ends
 
+// sorting feature starts
+const sortCoffees = (method) => {
+    console.log("sortCoffees:", method); // TESTING
+    if(method === "name: a-z"){
+        console.log("sortCoffees:", 1); // TESTING
+        filteredCoffees = filteredCoffees.sort((a, b) => a.name.localeCompare(b.name));
+    }else if(method === "name: z-a"){
+        console.log("sortCoffees:", 2); // TESTING
+        filteredCoffees = filteredCoffees.sort((a, b) => b.name.localeCompare(a.name));
+    }else if(method === "date: 0-9"){
+        console.log("sortCoffees:", 3); // TESTING
+        filteredCoffees = filteredCoffees.sort((a, b) => a.reviewDate - b.reviewDate);
+    }else{ // method === "date: 9-0"
+        console.log("sortCoffees:", 4); // TESTING
+        filteredCoffees = filteredCoffees.sort((a, b) => b.reviewDate - a.reviewDate);
+    }
+};
+
+const initSort = () => {
+    const buttons = document.querySelectorAll('.sort-buttons button');
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            buttons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            sortCoffees(button.textContent);
+            injectCoffeeCardsIntoDom();
+            initPagination();
+        });
+    });
+};
+// sorting feature ends
 
 document.addEventListener("DOMContentLoaded", async()=>{
     await fetchCoffeeData();
@@ -228,16 +256,5 @@ document.addEventListener("DOMContentLoaded", async()=>{
     initPagination();
     // initSearchBar();
     initFormSubmit();
+    initSort();
 });
-
-// <li>
-// <figure>
-//   <!-- Photo by Quentin Dr on Unsplash -->
-//   <img src="https://images.unsplash.com/photo-1471421298428-1513ab720a8e" alt="Several hands holding beer glasses">
-//   <figcaption><h3>Billions upon billions</h3></figcaption>
-// </figure>
-// <p>
-//   Made in the interiors of collapsing stars star stuff harvesting star light venture billions upon billions Drake Equation brain is the seed of intelligence?
-// </p>
-// <a href="#">Visit Website</a>
-// </li> 

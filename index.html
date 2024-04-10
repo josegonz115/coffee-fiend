@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang='en' class='scroll-smooth'>
 <head>
-    <title>LA TV Shows | Home</title>
+    <title>Coffee Fiend</title>
     <meta charset='UTF-8' />
     <meta name="description" content="A Catalog of Shows Set in Los Angeles">
     <meta name='viewport' content='width=device-width, initial-scale=1' />
@@ -9,6 +9,7 @@
     <link rel='icon' type='image/png' sizes='32x32' href='/favicon-32x32.png' />
     <link rel='icon' type='image/png' sizes='16x16' href='/favicon-96x96.png' /> -->
     <meta name='author' content='Jose Juan Gonzalez Jr' />
+    <link rel="icon" href="/public/favicon.svg" />
     <link rel="stylesheet" href="style.css" />
     <script  type="text/javascript" src="Coffee.js"></script>
     <script type="text/javascript" src="scripts.js"></script>
@@ -17,10 +18,17 @@
 
 <body>
     <header class="main-header">
-        <h1 class="title heading-text">LA TV Shows</h1>
+        <h1 class="title heading-text">Coffee Fiend ☕️</h1>
     </header>
     <main>
         <div class="filter-bar">
+            <h3>Filter and Sort Menu</h3>
+            <div class="sort-buttons">
+                <button class="active">name: a-z</button>
+                <button>name: z-a</button>
+                <button>date: 0-9</button>
+                <button>date: 9-0</button>
+            </div>
             <form>
                 <input type="text" placeholder="Search Name..." id="search-bar">
                 <label for="roast">Roast:</label>
@@ -87,6 +95,7 @@
                     <p class="card-content-review">review</p>
                     <h3 class="card-content-price">100g_USD</h3>
                     <h3 class="card-content-rating">rating</h3>
+                    <p class="card-content-date">review date</p>
                 </div>
             </div>
         </div>

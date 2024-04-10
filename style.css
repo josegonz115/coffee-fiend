@@ -60,7 +60,7 @@ main{
 
 .card {
     width: 18rem;
-    height: 20rem;
+    height: 22rem;
     border: 1px solid #ccc;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -158,6 +158,7 @@ button {
     align-items: center; */
     border-radius: 0.5rem;
     width: 100%;
+    text-align: center;
 }
 .filter-bar > form{
     display: flex;
@@ -165,7 +166,8 @@ button {
     justify-content: center;
     align-items: center;
     gap: 1rem;
-    padding: 2rem;
+    padding-inline: 2rem;
+    padding-bottom: 2rem;
 }
 .filter-bar input {
     /* float: right; */
@@ -174,6 +176,24 @@ button {
     padding: 0.3rem;
 }
 /* filter bar ends */
+
+/* sort buttons */
+.sort-buttons{
+    display: flex;
+    justify-content: center;
+    margin-block: 1.5rem;
+    gap: 1rem;
+}
+.sort-buttons button:hover{
+    background-color: var(--coffee-bean); 
+    color: white; 
+}
+.sort-buttons .active{
+    background-color: var(--coffee-bean); 
+    color: white; 
+}
+/* sort buttons ends*/
+
 
 @media (min-width: 640px) { 
     .text{
